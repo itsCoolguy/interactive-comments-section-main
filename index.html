@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <title>Interactive comments section</title>
+  </head>
+  <body>
+
+    <main>
+      <div class="comment-card" id="">
+        <div class="parent-comment">
+          <aside class="comment-vote-frame comment-vote-frame-desktop">
+            <button class="vote-button upvote-comment-button" onclick="upVoteComment(this)">
+              <img src="./images/icon-plus.svg" alt="upvote" class="upvote-comment-button-image">
+            </button>
+            <p class="comment-votes-text">0</p>
+            <button class="vote-button downvote-comment-button" onclick="downVoteComment(this)">
+              <img src="./images/icon-minus.svg" alt="upvote" class="downvote-comment-button-image">
+            </button>
+          </aside>
+          
+          <div class="comment-content">
+            <div class="comment-heading">
+              <div class="comment-heading-left">
+                <img src="./images/avatars/blank-user-svgrepo-com.svg" alt="profile picture" class="comment-profile-picture">
+                <h4 class="comment-poster">username</h4>
+                <h4 class="comment-time">0 seconds ago</h4>
+              </div>
+              <div class="main-buttons">
+                <button class="footer-button reply-button reply-button-desktop">
+                  <img src="./images/icon-reply.svg" alt="reply button" class="footer-button-image reply-button-image">
+                  <p class="footer-button-text reply-button-text">Reply</p>
+                </button>
+  
+                <button class="footer-button delete-button delete-button-desktop">
+                  <img src="./images/icon-delete.svg" alt="delete button" class="footer-button-image delete-button-image">
+                  <p class="footer-button-text delete-button-text">Delete</p>
+                </button>
+  
+                <button class="footer-button edit-button edit-button-desktop">
+                  <img src="./images/icon-edit.svg" alt="reply button" class="footer-button-image edit-button-image">
+                  <p class="footer-button-text edit-button-text">Edit</p>
+                </button>
+              </div>
+            </div>
+            
+            <p class="main-comment-text">
+              <strong class="replying-to-text"></strong>
+              Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's 
+              standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make 
+              a type specimen book.
+            </p>
+            <div class="comment-edit-frame">
+              <textarea class="main-comment-text-edit" style="resize:none"></textarea>
+              <div id="edit-buttons">
+                <button class="edit-comment-button cancel-comment-update-button">CANCEL</button>
+                <button class="edit-comment-button update-comment-button">UPDATE</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="comment-footer">
+            <div class="comment-vote-frame">
+              <button class="vote-button upvote-comment-button" onclick="upVoteComment(this)">
+                <img src="./images/icon-plus.svg" alt="upvote" class="upvote-comment-button-image">
+              </button>
+              <p class="comment-votes-text">0</p>
+              <button class="vote-button downvote-comment-button" onclick="downVoteComment(this)">
+                <img src="./images/icon-minus.svg" alt="upvote" class="downvote-comment-button-image">
+              </button>
+            </div>
+
+            <div class="main-buttons">
+              <button class="footer-button reply-button">
+                <img src="./images/icon-reply.svg" alt="reply button" class="footer-button-image reply-button-image">
+                <p class="footer-button-text reply-button-text">Reply</p>
+              </button>
+  
+              <button class="footer-button delete-button">
+                <img src="./images/icon-delete.svg" alt="delete button" class="footer-button-image delete-button-image">
+                <p class="footer-button-text delete-button-text">Delete</p>
+              </button>
+  
+              <button class="footer-button edit-button">
+                <img src="./images/icon-edit.svg" alt="edit button" class="footer-button-image edit-button-image">
+                <p class="footer-button-text edit-button-text">Edit</p>
+              </button>
+            </div>
+
+          </div>
+        </div>
+        <div class="create-reply-frame">
+          <img src="./images/avatars/blank-user-svgrepo-com.svg" alt="profile picture" class="comment-profile-picture create-reply-profile-picture">
+          <div class="reply-comment-main">
+            <textarea placeholder="Write a reply..." style="resize: none" class="reply-comment-text" autocomplete="off"></textarea>
+            <div class="reply-frame-buttons">
+              <button class="comment-reply-button send-reply-button" onclick="">REPLY</button>
+              <button class="comment-reply-button cancel-reply-button" onclick="">CANCEL</button>
+            </div>
+          </div>
+        </div>
+        <div class="comment-replies">
+          
+        </div>
+      </div>
+
+      <div id="add-comment">
+        <textarea placeholder="Add a comment..." style="resize: none" id="add-comment-text" autocomplete="off"></textarea>
+        <div id="add-comment-under">
+          <img src="./images/avatars/image-amyrobson.png" alt="profile picture" id="add-comment-profile-picture" class="comment-profile-picture">
+          <button class="send-comment-button" onclick="sendComment()">SEND</button>
+        </div>
+      </div>
+    </main>
+
+    <div id="black-overlay"></div>
+
+    <div id="confirm-deletion">
+      <h3>Delete comment</h3>
+      <p>Are you sure you want to delete this comment? This will remove the comment and can't be undone.</p>
+      <div id="deletion-buttons">
+        <button id="cancel-deletion-button" onclick="cancelCommentDeletion()">NO, CANCEL</button>
+        <button id="confirm-deletion-button" onclick="deleteComment()">YES, DELETE</button>
+      </div>
+    </div>
+
+    <script src="comment_loader.js"></script>
+    <script src="comment_handler.js" id="comment-handler-script"></script>
+  </body>
+</html>
