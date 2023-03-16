@@ -12,6 +12,8 @@ let commentToBeDeleted = null;
 let currentId = 1;
 let data_;
 
+let loaded = false;
+
 if (production) {
     fetch('./data.json').then((res) => {
         return res.json();
@@ -82,7 +84,7 @@ const createCard = (data, currentUser, parent) => {
     currentId ++;
     const clonedComment = commentCardTemplate.cloneNode(true);
     clonedComment.querySelector('.main-comment-text').innerHTML = '<strong></strong>' + commentData.content;
-    clonedComment.id = commentData.id;
+    clonedComment.id = 'card-' + commentData.id;
     clonedComment.setAttribute('score', commentData.score);
     clonedComment.querySelector('.comment-time').textContent = commentData.createdAt;
     clonedComment.querySelector('.comment-poster').textContent = commentData.user.username;
@@ -220,4 +222,5 @@ function loadComments(data) {
         reacurr(comments[i].replies, newComment);
         //}
     }
+    loaded = true;
 }
