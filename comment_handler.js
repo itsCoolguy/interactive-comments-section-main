@@ -13,10 +13,11 @@ const setData = () => {
 }
 
 function updateSessionCardScore(card) {
+    console.log('hi')
     const commentsData = JSON.parse(sessionStorage.getItem('comments'));
     const reacurr = function(parent) {
         parent.forEach((comment, index) => {
-            if (comment.id == Number(card.id)) {
+            if (comment.id == Number(card.id.toString().split('card-')[1])) {
                 comment.score = Number(card.getAttribute('score'));
                 return;
             }
