@@ -1,7 +1,7 @@
 let data = null;
 
 let votes = sessionStorage.getItem('votes');
-if (votes === null || votes == 'null') {
+if (votes === null || votes == 'null' || votes == {}) {
     sessionStorage.setItem('votes', JSON.stringify({}));
     votes = {};
 } else {
@@ -133,34 +133,62 @@ function deleteCommentConfirmation(card) {
 function reset() {
     sessionStorage.setItem('comments', null);
     sessionStorage.setItem('votes', null);
+    sessionStorage.setItem('currentId', null);
 }
 function get() {
     console.log(JSON.parse(sessionStorage.getItem('comments')));
 }
 
 function deleteComment() {
-    const oldId = commentToBeDeleted.id;
+    const oldId = Number(commentToBeDeleted.id.toString().split('card-')[1]);
+    const commentsData = JSON.parse(sessionStorage.getItem('comments'));
     commentToBeDeleted.remove();
+
+    // Delete comment in local/session storage
+    
+    const reacurr = function(parent) {
+        parent.forEach((comment, index) => {
+            if (comment.id == Number(oldId)) {
+                parent.splice(index, 1);
+                if ('card-' + oldId in votes) {
+                    console.log(votes['card-' + oldId])
+                    delete votes['card-' + oldId];
+                    console.log(votes);
+                    sessionStorage.setItem('votes', votes);
+                }
+                return;
+            }
+            reacurr(comment.replies);
+        });
+    }
+    reacurr(commentsData);
+
+    const changeData = function(id, parent) {
+        parent.forEach((comment, index) => {
+            console.log(comment.id);
+            console.log(id);
+            if (Number(comment.id) == Number(id)) {
+                // Reminder: dont put 'card-' infront because it is looping thru data not elements
+                comment.id = Number(comment.id) - 1;
+                console.log(comment)
+                console.log('found2')
+                return;
+            }
+            changeData(id, comment.replies);
+        });
+    }
     document.querySelectorAll('.comment-card').forEach(card => {
-        if (Number(card.id) > oldId) {
-            card.id = Number(card.id) - 1;
+        if (Number(card.id.toString().split('card-')[1]) > oldId) {
+            
+            console.log(card)
+            console.log(Number(card.id.toString().split('card-')[1]));
+            changeData(Number(card.id.toString().split('card-')[1]), commentsData);
+            card.id = 'card-' + (Number(card.id.toString().split('card-')[1]) - 1);
         }
     })
     document.querySelector('#black-overlay').style.display = 'none';
     document.querySelector('#confirm-deletion').style.display = 'none';
 
-    // Delete comment in local/session storage
-    const commentsData = JSON.parse(sessionStorage.getItem('comments'));
-    const reacurr = function(parent) {
-        parent.forEach((comment, index) => {
-            if (comment.id == Number(oldId)) {
-                parent.splice(index, 1);
-                return;
-            }
-            reacurr(comment.replies);
-        })
-    }
-    reacurr(commentsData);
     sessionStorage.setItem('comments', JSON.stringify(commentsData));
     commentToBeDeleted = null;
 }
@@ -176,7 +204,7 @@ function sendComment() {
     dataToSend = {
         "content": commentText.value,
         "createdAt": 'Just now',
-        "id": currentId,
+        "id": currentId+1,
         "user": {
             "username": data.currentUser.username,
             "image": {
@@ -212,7 +240,7 @@ function sendReply(card) {
     dataToSend = {
         "content": replyText.value,
         "createdAt": 'Just now',
-        "id": currentId,
+        "id": currentId+1,
         "user": {
             "username": data.currentUser.username,
             "image": {
@@ -224,6 +252,8 @@ function sendReply(card) {
         "score": 0,
         "replies": [],
     }
+    console.log(currentId);
+    console.log(dataToSend);
     createCard(dataToSend, data.currentUser, card.querySelector('.comment-replies'));
     cancelReplyFrame(card);
 }
@@ -259,7 +289,7 @@ function updateComment(card) {
     const commentsData = JSON.parse(sessionStorage.getItem('comments'));
     const reacurr = function(parent) {
         parent.forEach((comment) => {
-            if (comment.id == Number(card.id)) {
+            if (comment.id == Number(card.id.toString().split('card-')[1])) {
                 comment.content = mainTextFrame.textContent;
                 return;
             }
