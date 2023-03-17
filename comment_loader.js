@@ -9,8 +9,15 @@ const commentText = document.querySelector('#add-comment-text');
 
 let commentToBeDeleted = null;
 
-let currentId = 1;
+let currentId = null;
 let data_;
+
+// if (sessionStorage.getItem('currentId') == null || sessionStorage.getItem('currentId') == 'null') {
+//     currentId = 0;
+// } else {
+//     currentId = sessionStorage.getItem('currentId');
+// }
+currentId = 0;
 
 let loaded = false;
 
@@ -81,7 +88,8 @@ const createCard = (data, currentUser, parent) => {
         commentData = JSON.parse(data);
     }
     commentData = data;
-    currentId ++;
+    //console.log(data);
+    sessionStorage.setItem('currentId', currentId);
     const clonedComment = commentCardTemplate.cloneNode(true);
     clonedComment.querySelector('.main-comment-text').innerHTML = '<strong></strong>' + commentData.content;
     clonedComment.id = 'card-' + commentData.id;
@@ -153,24 +161,19 @@ const createCard = (data, currentUser, parent) => {
     let canContinue = true;
     const loopCheck = function(element) { 
         element.forEach(item => {
-            if (Number(item.id) == Number(commentData.id)) {
+            if (Number(item.id) === Number(commentData.id)) {
                 canContinue = false;
             } else {
-                //console.log(item);
                 loopCheck(item.replies);
             }
         })
     }
     loopCheck(sessionComments);
     if (canContinue === true) {
-        // if ('replyingTo' in commentData) {
-        //     console.log('comment data has a replyingTo in it, meaning it is a reply: ' + times);
-        //     times ++;
-        //     return clonedComment;
-        // }
         const checkForReplyPush = function(element) {
             element.forEach(item => {
-                if (Number(item.id) === Number(parent.closest('.comment-card').id)) {
+                // Getting the correct array item to add the reply to
+                if (Number(item.id) === Number(parent.closest('.comment-card').id.toString().split('card-')[1])) {
                     item.replies.push(commentData);
                     return true;
                 }
@@ -181,16 +184,12 @@ const createCard = (data, currentUser, parent) => {
             sessionComments.push(commentData);
         } else {
             checkForReplyPush(sessionComments);
-            // sessionComments.forEach(item => {
-            //     console.log(item.id + ':' + Number(parent.closest('.comment-card').id))
-            //     if (Number(item.id) === Number(parent.closest('.comment-card').id)) {
-            //         item.replies.push(commentData);
-            //     }
-            // })
         }
+        console.log(sessionComments);
         sessionStorage.setItem('comments', JSON.stringify(sessionComments));
     }
     times ++;
+    currentId ++;
     return clonedComment;
 }
 
